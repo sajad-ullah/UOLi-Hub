@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Event Calendar</title>
+  <style>
+    /* === GOOD THEME STYLES === */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 10px;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 30px #00ffff88;
+      border-bottom: 2px solid #00ffff;
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.1em;
+      color: #ccc;
+    }
+
+    .calendar-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      padding: 40px 60px;
+    }
+
+    .event-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid #00ffff44;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px #00ffff33;
+      transition: 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 40px #00ffffaa;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, #00ffff, transparent, #00ffff);
+      animation: rotate 6s linear infinite;
+      z-index: 0;
+      opacity: 0.1;
+    }
+
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    .event-info {
+      position: relative;
+      z-index: 2;
+    }
+
+    .event-date {
+      font-size: 1.1em;
+      color: #00ffff;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .event-title {
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .event-description {
+      font-size: 0.95em;
+      color: #ddd;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-top: 2px solid #00ffff55;
+      font-size: 0.9em;
+      color: #aaa;
+      margin-top: 40px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #00ffff22;
+      border: 1px solid #00ffff;
+      color: #00ffff;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #00ffff55;
+    }
+
+    .btn:hover {
+      background: #00ffff;
+      color: #0a0a0a;
+      box-shadow: 0 0 30px #00ffff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎓 University of Loralai — Event Calendar</h1>
+    <p>Stay updated with upcoming seminars, workshops, and university activities!</p>
+  </header>
+
+  <section class="calendar-container">
+
+    <div class="event-card">
+      <div class="event-info">
+        <div class="event-date">October 20, 2025</div>
+        <div class="event-title">AI & Data Science Workshop</div>
+        <div class="event-description">
+          Join experts to explore the world of Artificial Intelligence and Data Analytics with hands-on sessions.
+        </div>
+        <a href="https://uoli.edu.pk/department-of-computer-science/" target="_blank" class="btn">Register</a>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-info">
+        <div class="event-date">October 25, 2025</div>
+        <div class="event-title">Entrepreneurship Seminar</div>
+        <div class="event-description">
+          An inspiring session on innovation and startups featuring successful entrepreneurs from Balochistan.
+        </div>
+        <a href="https://uoli.edu.pk/faculty-of-management-sciences/" target="_blank" class="btn">Learn More</a>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-info">
+        <div class="event-date">November 1, 2025</div>
+        <div class="event-title">Research Paper Presentation Day</div>
+        <div class="event-description">
+          Students showcase their latest research papers to faculty and peers for constructive feedback.
+        </div>
+        <a href="https://uoli.edu.pk/research-publications/" target="_blank" class="btn">View Schedule</a>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-info">
+        <div class="event-date">November 10, 2025</div>
+        <div class="event-title">Career Counseling Session</div>
+        <div class="event-description">
+          Get expert guidance on career paths, CV writing, and interview skills from top HR professionals.
+        </div>
+        <a href="https://uoli.edu.pk/student-affairs/" target="_blank" class="btn">Join Now</a>
+      </div>
+    </div>
+
+  </section>
+
+  <footer>
+    © 2025 University of Loralai | Developed with 💙 using the Good Theme
+  </footer>
+
+</body>
+</html>
