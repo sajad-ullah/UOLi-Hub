@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPA Calculator (4.00 Scale)</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=80') no-repeat center center/cover;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .container {
+    width: 90%;
+    max-width: 900px;
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    padding: 30px;
+    backdrop-filter: blur(10px);
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #00ffff;
+    text-shadow: 0 0 15px #00ffff;
+  }
+
+  p {
+    text-align: center;
+    color: #ccc;
+    margin-bottom: 30px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  th {
+    color: #00ffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  td input {
+    width: 90%;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    text-align: center;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-weight: 600;
+  }
+
+  td button {
+    background: rgba(255,0,0,0.7);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 5px;
+    transition: 0.3s;
+  }
+
+  .btn-add {
+    background: linear-gradient(90deg, #00ffff, #0077ff);
+    color: #000;
+    box-shadow: 0 0 15px #00ffff;
+  }
+
+  .btn-calc {
+    background: linear-gradient(90deg, #ff00ff, #ff0099);
+    color: white;
+    box-shadow: 0 0 15px #ff00ff;
+  }
+
+  .btn-clear {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(255,255,255,0.3);
+  }
+
+  .results {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(0,0,0,0.3);
+    box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  }
+
+  .results h2 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .results .number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #00ffff;
+    text-shadow: 0 0 25px #00ffff;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+
+  /* 🌟 Result Card (New Feature) */
+  .result-card {
+    display: none;
+    margin-top: 25px;
+    background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(255,0,255,0.1));
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 25px #00ffff;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  .result-card h3 {
+    font-size: 1.5rem;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+  }
+
+  .result-card p {
+    font-size: 1.1rem;
+    color: #fff;
+  }
+
+  .result-card .highlight {
+    color: #ff00ff;
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎓 GPA Calculator (4.00 Scale)</h1>
+    <p>Enter your courses, credits, and grade points to calculate your semester GPA.</p>
+
+    <!-- Student Name Input -->
+    <div style="text-align:center; margin-bottom: 15px;">
+      <input id="studentName" type="text" placeholder="Enter Your Name" style="padding:10px 15px; border-radius:10px; border:none; outline:none; width:60%; text-align:center; font-weight:600; background:rgba(255,255,255,0.1); color:white;">
+    </div>
+
+    <table id="courseTable">
+      <thead>
+        <tr>
+          <th>Enter Your Subjects</th>
+          <th>Credits Hour</th>
+          <th>Grade/gpa (0-4)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <div style="text-align:center;">
+      <button class="btn btn-add" onclick="addRow()">➕ Add Course</button>
+      <button class="btn btn-calc" onclick="calculateGPA()">🧮 Calculate GPA</button>
+      <button class="btn btn-clear" onclick="clearTable()">🗑 Clear All</button>
+    </div>
+
+    <div class="results">
+      <h2>Your GPA</h2>
+      <div id="gpaResult" class="number">0.00</div>
+    </div>
+
+    <!-- 🎓 Result Card Section -->
+    <div id="resultCard" class="result-card">
+      <h3>🌟 Student Result Card 🌟</h3>
+      <p><strong>Name:</strong> <span id="cardName"></span></p>
+      <p><strong>Semester GPA:</strong> <span id="cardGPA" class="highlight"></span></p>
+      <p>Keep shining and working hard! 💫</p>
+    </div>
+
+    <footer>Developed by Sajad Ullah Ziaratwall 💫💫</footer>
+  </div>
+
+<script>
+function addRow(course = '', credits = '', grade = '') {
+  const tbody = document.getElementById('tableBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" placeholder="e.g. Physics" value="${course}"></td>
+    <td><input type="number" min="0" step="0.5" placeholder="Credits" value="${credits}"></td>
+    <td><input type="number" min="0" max="4" step="0.01" placeholder="Grade" value="${grade}"></td>
+    <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function calculateGPA() {
+  const rows = document.querySelectorAll("#tableBody tr");
+  const studentName = document.getElementById("studentName").value.trim();
+  let totalCredits = 0;
+  let totalPoints = 0;
+
+  rows.forEach(row => {
+    const credits = parseFloat(row.children[1].children[0].value) || 0;
+    const grade = parseFloat(row.children[2].children[0].value) || 0;
+    totalCredits += credits;
+    totalPoints += credits * grade;
+  });
+
+  const gpa = totalCredits ? (totalPoints / totalCredits).toFixed(2) : 0;
+  document.getElementById('gpaResult').textContent = gpa;
+
+  // 🌟 Show Result Card
+  const card = document.getElementById("resultCard");
+  const cardName = document.getElementById("cardName");
+  const cardGPA = document.getElementById("cardGPA");
+
+  if (studentName === "") {
+    cardName.textContent = "Unnamed Student";
+  } else {
+    cardName.textContent = studentName;
+  }
+  cardGPA.textContent = gpa;
+
+  card.style.display = "block";
+  card.scrollIntoView({ behavior: "smooth" });
+}
+
+function clearTable() {
+  document.getElementById('tableBody').innerHTML = '';
+  document.getElementById('gpaResult').textContent = '0.00';
+  document.getElementById('studentName').value = '';
+  document.getElementById('resultCard').style.display = 'none';
+}
+
+// Add default rows
+addRow('', 0, 0);
+</script>
+</body>
+</html>
