@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💬 Ultimate Language Learning Portal | University of Loralai</title>
+<style>
+/* === GOOD THEME STYLES === */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at top, #0f0c29, #302b63, #24243e);
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 40px 10px;
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 0 40px #00ffff99;
+  border-bottom: 2px solid #00ffff;
+}
+
+header h1 {
+  font-size: 2.7em;
+  color: #00ffff;
+  text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1.2em;
+  color: #ccc;
+}
+
+.language-buttons {
+  text-align: center;
+  margin: 25px 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lang-btn {
+  background: linear-gradient(90deg, #00ffff, #00ff88, #0099ff);
+  border: none;
+  color: #0a0a0a;
+  font-weight: bold;
+  padding: 12px 25px;
+  margin: 8px;
+  border-radius: 40px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: 0.4s;
+  box-shadow: 0 0 15px #00ffff66;
+}
+
+.lang-btn:hover, .lang-btn.active {
+  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  color: #fff;
+  box-shadow: 0 0 40px #00ffffaa, 0 0 60px #ff00ffaa;
+  transform: scale(1.1);
+}
+
+.language-content {
+  display: none;
+  padding: 20px 30px;
+  text-align: left;
+  animation: fadeIn 0.8s ease;
+  max-width: 900px;
+  margin: auto;
+}
+
+.language-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid #00ffff44;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 25px #00ffff33;
+  transition: 0.4s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 50px #00ffffaa;
+}
+
+.card h3 {
+  color: #00ffff;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+  text-shadow: 0 0 8px #00ffff;
+}
+
+.card ul, .card p {
+  font-size: 1em;
+  color: #ddd;
+  line-height: 1.6;
+}
+
+.quiz-btn {
+  margin: 5px;
+  padding: 6px 15px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #00ffff44;
+  color: #0a0a0a;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.quiz-btn:hover {
+  background: #00ffff;
+  color: #fff;
+}
+
+.progress-bar {
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  height: 20px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: #00ffff;
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0,0,0,0.4);
+  border-top: 2px solid #00ffff55;
+  font-size: 0.9em;
+  color: #aaa;
+  margin-top: 40px;
+}
+
+/* 🌟 Chatbot */
+#chatbot-container {
+  position: fixed;
+  bottom: 90px;
+  right: 30px;
+  width: 340px;
+  height: 450px;
+  background: rgba(15,15,40,0.95);
+  border: 2px solid #00ffff99;
+  border-radius: 20px;
+  box-shadow: 0 0 25px #00ffff88;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 999;
+}
+#chatbot-header {
+  background: linear-gradient(90deg, #00ffff, #00ccff);
+  color: #000;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+#chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  color: #fff;
+  font-size: 0.9em;
+  display: flex;
+  flex-direction: column;
+}
+.msg {
+  margin: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  line-height: 1.4;
+}
+.user {
+  background: rgba(0,255,255,0.25);
+  align-self: flex-end;
+}
+.bot {
+  background: rgba(255,0,255,0.25);
+  align-self: flex-start;
+}
+.chatbot-input {
+  display: flex;
+  border-top: 1px solid #00ffff55;
+}
+.chatbot-input input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #fff;
+  padding: 10px;
+  font-size: 0.9em;
+  outline: none;
+}
+.chatbot-input button {
+  background: #00ffff;
+  border: none;
+  color: #000;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 0 0 18px 0;
+  transition: 0.3s;
+}
+.chatbot-input button:hover {
+  background: #ff00ff;
+  color: #fff;
+}
+#chatbot-toggle {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: linear-gradient(90deg, #00ffff, #00ccff);
+  border: none;
+  color: #000;
+  font-size: 1.2em;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  box-shadow: 0 0 25px #00ffffaa;
+  transition: 0.4s;
+  z-index: 1000;
+}
+#chatbot-toggle:hover {
+  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  color: #fff;
+  transform: scale(1.1);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💬 Ultimate Language Learning Portal</h1>
+  <p>Learn English, Urdu, Pashto, and Balochi with complete grammar, quizzes, exercises, and AI assistance!</p>
+</header>
+
+<div class="language-buttons">
+  <button class="lang-btn active" onclick="showLanguage('english', event)">🇬🇧 English</button>
+  <button class="lang-btn" onclick="showLanguage('urdu', event)">🇵🇰 Urdu</button>
+  <button class="lang-btn" onclick="showLanguage('pashto', event)">🏔️ Pashto</button>
+  <button class="lang-btn" onclick="showLanguage('balochi', event)">🪶 Balochi</button>
+</div>
+
+<!-- ================= ENGLISH ================= -->
+<div id="english" class="language-content active">
+  <h2>🇬🇧 English — Grammar & Materials</h2>
+
+  <div class="card">
+    <h3>📘 Tenses (Summary + Examples)</h3>
+    <ul>
+      <li><b>Present Simple</b> — Formula: Subject + base verb. Example: She writes letters.</li>
+      <li><b>Present Continuous</b> — Formula: Subject + am/is/are + verb-ing. Example: She is writing now.</li>
+      <li><b>Past Simple</b> — Formula: Subject + past verb. Example: She wrote yesterday.</li>
+      <li><b>Past Continuous</b> — Formula: Subject + was/were + verb-ing. Example: She was writing at 8pm.</li>
+      <li><b>Present Perfect</b> — Formula: Subject + has/have + past participle. Example: She has written three letters.</li>
+      <li><b>Future (will)</b> — Formula: Subject + will + verb. Example: She will write tomorrow.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🧩 Parts of Speech (Definition + Example)</h3>
+    <ul>
+      <li><b>Noun:</b> person/place/thing — <i>book, city, Ali</i>.</li>
+      <li><b>Verb:</b> action/state — <i>read, write, be</i>.</li>
+      <li><b>Adjective:</b> describes noun — <i>beautiful, tall</i>.</li>
+      <li><b>Adverb:</b> describes verb/adjective — <i>quickly, very</i>.</li>
+      <li><b>Pronoun:</b> replaces noun — <i>he, they</i>.</li>
+      <li><b>Preposition:</b> shows relation — <i>in, on, at</i>.</li>
+      <li><b>Conjunction:</b> joins clauses — <i>and, but</i>.</li>
+      <li><b>Interjection:</b> exclamation — <i>Wow!, Oh!</i>.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💬 Direct & Indirect Speech</h3>
+    <ul>
+      <li><b>Direct:</b> He said, "I am hungry."</li>
+      <li><b>Indirect:</b> He said (that) he was hungry.</li>
+      <li><b>Rule:</b> Backshift tense (present → past) and change pronouns/time words when reporting.</li>
+      <li><b>Question:</b> "Where are you?" → He asked where I was.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🔁 Active & Passive Voice</h3>
+    <ul>
+      <li><b>Active:</b> The dog chased the cat.</li>
+      <li><b>Passive:</b> The cat was chased by the dog.</li>
+      <li><b>Formula Passive:</b> Object + be (correct tense) + past participle (+ by + subject).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📝 Useful Grammar Tips & Mini-Exercises</h3>
+    <ul>
+      <li>Use <b>present continuous</b> for actions happening now: "I am reading."</li>
+      <li>Use <b>present perfect</b> for experience: "I have seen that movie."</li>
+      <li>Try converting direct to indirect speech for practice.</li>
+      <li>Write 3 sentences: 1 present, 1 past, 1 future.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= URDU ================= -->
+<div id="urdu" class="language-content">
+  <h2>🇵🇰 Urdu — گرامر اور مواد</h2>
+
+  <div class="card">
+    <h3>📘 زمانے (Tenses)</h3>
+    <ul>
+      <li><b>حال (Present):</b> فارمولا: فاعل + فعل (حال). مثال: وہ کتاب پڑھتا ہے۔</li>
+      <li><b>ماضی (Past):</b> فارمولا: فاعل + ماضی فعل. مثال: اس نے کل لکھا۔</li>
+      <li><b>مستقبل (Future):</b> فارمولا: فاعل + مستقبل فعل. مثال: وہ کل آئے گا۔</li>
+      <li><b>حال جاری (Present Continuous):</b> وہ پڑھ رہا ہے۔</li>
+      <li><b>ماضی جاری (Past Continuous):</b> وہ پڑھ رہا تھا۔</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🧩 اقسامِ کلمات (Parts of Speech)</h3>
+    <ul>
+      <li><b>اسم:</b> شخص/جگہ/چیز — مثال: کتاب، اسکول، علی</li>
+      <li><b>فعل:</b> عمل — مثال: پڑھنا، لکھنا</li>
+      <li><b>صفت:</b> وصف — مثال: خوبصورت، بڑا</li>
+      <li><b>حال/ظرف:</b> طریقہ — مثال: جلدی، آہستہ</li>
+      <li><b>ضمیر، حرفِ جار، حرفِ عطف وغیرہ</b></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💬 براہِ راست اور بالواسطہ تقریر</h3>
+    <ul>
+      <li><b>براہِ راست:</b> اس نے کہا، "میں خوش ہوں۔"</li>
+      <li><b>بالواسطہ:</b> اس نے کہا کہ وہ خوش تھا۔</li>
+      <li><b>قواعد:</b> زمانہ اور ضمیروں میں تبدیلی ضروری ہے۔</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🔁 مجھلقہ اور مبہم جملے (Active & Passive)</h3>
+    <ul>
+      <li><b>فعال:</b> لڑکا بال کو مارا۔</li>
+      <li><b>مبنی:</b> بال لڑکے نے مارا گیا۔ (عام طور پر: بال مارا گیا)</li>
+      <li>اردو میں passive کی شکلیں انگریزی سے مختلف روایتی اظہار رکھتی ہیں، مشق کریں۔</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📝 مشقیں</h3>
+    <ul>
+      <li>براہِ راست جملہ لیں اور اسے بالواسطہ میں تبدیل کریں۔</li>
+      <li>مختلف زمانوں میں ایک جملہ لکھیں (حال، ماضی، مستقبل)۔</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= PASHTO ================= -->
+<div id="pashto" class="language-content">
+  <h2>🏔️ Pashto — ګرامر او مواد</h2>
+
+  <div class="card">
+    <h3>📘 زمانې (Tenses)</h3>
+    <ul>
+      <li><b>Present:</b> فورموله: Subject + verb (present). مثال: زه کتاب لولم. (I read)</li>
+      <li><b>Past:</b> مثال: ما کتاب ولوست.</li>
+      <li><b>Future:</b> مثال: زه به کتاب ولولم.</li>
+      <li><b>Continuous:</b> مثال: هغه لوستل کوي.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🧩 د خبرې برخې (Parts of Speech)</h3>
+    <ul>
+      <li><b>اسم:</b> کتاب، کلی</li>
+      <li><b>فعل:</b> لوستل، تلو</li>
+      <li><b>صفت:</b> ښایسته، ښه</li>
+      <li><b>حال/عارض:</b> ژر، آرام</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💬 مستقیم او غیر مستقیم (Direct/Indirect)</h3>
+    <ul>
+      <li><b>Direct:</b> هغه وويل، "زه خوشحاله يم".</li>
+      <li><b>Indirect:</b> هغه وويل چې هغه خوشحاله و.</li>
+      <li>د زمانې او ضمیرونو بدلون د راجع کولو پر مهال پاملرنه غواړي.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🔁 فعال او مبني (Active/Passive)</h3>
+    <ul>
+      <li><b>Active:</b> هلک کتاب ولوست.</li>
+      <li><b>Passive:</b> کتاب د هلک لخوا ولوستل شو.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📝 تمرینونه</h3>
+    <ul>
+      <li>هر زمان کې يو مثال وليکئ — Present, Past, Future.</li>
+      <li>Direct او Indirect بدل کړئ.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= BALOCHI ================= -->
+<div id="balochi" class="language-content">
+  <h2>🪶 Balochi — Grammar & Materials</h2>
+
+  <div class="card">
+    <h3>📘 Tenses</h3>
+    <ul>
+      <li><b>Present:</b> Formula: Subject + verb. Example: Man kitab parsan. (I read a book.)</li>
+      <li><b>Past:</b> Example: Man kitab parsīd. (I read the book.)</li>
+      <li><b>Future:</b> Example: Man kitab parsanag. (I will read.)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🧩 Parts of Speech</h3>
+    <ul>
+      <li><b>Noun:</b> kitab, mard</li>
+      <li><b>Verb:</b> parsan, batan</li>
+      <li><b>Adjective:</b> shandar, khoob</li>
+      <li><b>Adverb / Particles:</b> (usage examples included)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💬 Direct & Indirect</h3>
+    <ul>
+      <li><b>Direct:</b> O goost, "Man khush an".</li>
+      <li><b>Indirect:</b> O goost ke man khush ant.</li>
+      <li>Follow similar backshift rules as other languages when reporting speech.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🔁 Active / Passive</h3>
+    <ul>
+      <li><b>Active:</b> Ali kitab parsan.</li>
+      <li><b>Passive:</b> Kitab (by) Ali parsanag.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📝 Practice</h3>
+    <ul>
+      <li>Write short dialogues and convert direct into indirect speech.</li>
+      <li>Create example sentences in different tenses.</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+© 2025 University of Loralai | Developed by Sajad Ullah Ziaratwall 
+</footer>
+
+<!-- 🌟 Chatbot HTML (unchanged) -->
+<div id="chatbot-container">
+  <div id="chatbot-header">🤖 Smart Language Chatbot</div>
+  <div id="chatbot-messages"></div>
+  <div class="chatbot-input">
+    <input id="chatbot-input" type="text" placeholder="Ask about grammar, tenses, etc...">
+    <button onclick="sendChat()">Send</button>
+  </div>
+</div>
+<button id="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+
+<script>
+// Tabs
+function showLanguage(lang, e) {
+  document.querySelectorAll('.language-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(lang);
+  if (target) target.classList.add('active');
+  if (e && e.target && e.target.classList) e.target.classList.add('active');
+}
+
+// 🌟 Chatbot Code (unchanged functionality)
+function toggleChatbot(){
+  const box=document.getElementById('chatbot-container');
+  box.style.display=(box.style.display==='flex')?'none':'flex';
+  if(box.style.display==='flex') loadChatHistory();
+}
+function sendChat(){
+  const input=document.getElementById('chatbot-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  addMsg(msg,'user');
+  saveMsg(msg,'user');
+  input.value='';
+  setTimeout(()=>{
+    const response=botResponse(msg);
+    addMsg(response,'bot');
+    saveMsg(response,'bot');
+  },300);
+}
+function addMsg(text,cls){
+  const area=document.getElementById('chatbot-messages');
+  const div=document.createElement('div');
+  div.className='msg '+cls;
+  div.textContent=text;
+  area.appendChild(div);
+  area.scrollTop=area.scrollHeight;
+}
+function saveMsg(text,cls){
+  let chat=JSON.parse(localStorage.getItem('chatHistory')||'[]');
+  chat.push({text,cls});
+  localStorage.setItem('chatHistory',JSON.stringify(chat));
+}
+function loadChatHistory(){
+  const area=document.getElementById('chatbot-messages');
+  area.innerHTML='';
+  let chat=JSON.parse(localStorage.getItem('chatHistory')||'[]');
+  chat.forEach(m=>addMsg(m.text,m.cls));
+}
+function botResponse(msg){
+  msg=msg.toLowerCase();
+  if(msg.includes('hello')||msg.includes('hi'))return'👋 Hello! How can I help you learn today?';
+  if(msg.includes('tense'))return'⏰ Tenses show the time of an action. Example: She writes a letter.';
+  if(msg.includes('noun'))return'📘 Noun: Name of person, place, or thing.';
+  if(msg.includes('verb'))return'⚙️ Verb: An action word like run, play, or write.';
+  if(msg.includes('direct'))return'💬 Direct: “I am happy.” → Indirect: He said he was happy.';
+  if(msg.includes('urdu'))return'🇵🇰 Urdu Example: علی سیب کھاتا ہے۔';
+  if(msg.includes('pashto'))return'🏔️ Pashto Example: علي مڼه خوري.';
+  if(msg.includes('balochi'))return'🪶 Balochi Example: علی مژ سیب خاءِ.';
+  if(msg.includes('thanks'))return'😊 You’re very welcome!';
+  return'🤖 I can help you with grammar, tenses, and translation — just ask!';
+}
+</script>
+</body>
+</html>
