@@ -8,7 +8,6 @@
     /* ===== GENERAL STYLING ===== */
     body {
       border-image: linear-gradient(135deg, #004aad, #ff0000, #fdd835) 1;
-
       margin: 0;
       font-family: 'Poppins', sans-serif;
       background: radial-gradient(circle at top, #001f3f, #000000);
@@ -104,6 +103,10 @@
       border-radius: 12px;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
       position: relative;
+      /* Added for print/PDF */
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
     }
 
     .watermark {
@@ -117,7 +120,7 @@
     }
 
     .watermark img {
-      width: 550PX;
+      width: 550px;
       height: auto;
       filter: grayscale(100%);
     }
@@ -144,6 +147,9 @@
       display: inline-block;
       padding-bottom: 5px;
       text-shadow: 1px 1px #fdd835;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
     }
 
     .subtitle {
@@ -173,6 +179,9 @@
       color: #004aad;
       width: 180px;
       display: inline-block;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
     }
 
     .footer {
@@ -180,6 +189,9 @@
       color: #004aad;
       font-weight: bold;
       margin-top: 50px;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
     }
 
     /* ===== ACTION BUTTONS ===== */
@@ -188,7 +200,6 @@
       text-align: center;
       margin-top: 30px;
     }
-    
 
     .action-buttons button {
       margin: 10px;
@@ -200,17 +211,53 @@
       color: white;
     }
 
+    /* ===== PRINT AND PDF FIXES ===== */
     @media print {
-      body { background: white; }
-      .form-container, .action-buttons { display: none; }
-      .front-page { box-shadow: none; }
+      body * {
+        visibility: hidden;
+        background: white !important;
+        color: black !important;
+      }
+      .front-page, .front-page * {
+        visibility: visible;
+        background: white !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+      .front-page {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 40px;
+        box-shadow: none;
+        border: 2px solid #004aad;
+      }
+      .form-container, .action-buttons, h1, h2 {
+        display: none !important;
+      }
+    }
+
+    /* Print-specific styling */
+    .print-only {
+      display: none;
+    }
+
+    @media print {
+      .print-only {
+        display: block;
+      }
     }
   </style>
 </head>
 <body>
 
   <h1>🎓 University of Loralai</h1>
-  <h2>Assignment Front Page Generater</h2>
+  <h2>Assignment Front Page Generator</h2>
 
   <div class="form-container" id="formContainer">
     <label>Name:</label><input type="text" id="name" >
@@ -256,8 +303,8 @@
 
   <div class="action-buttons" id="buttons">
     <button onclick="saveAsPDF()">💾 Save as PDF</button>
-    <button onclick="printPage()">🖨 Print Page</button>
     <button onclick="editAgain()">✏️ Edit Info</button>
+    <button onclick="window.print()">🖨️ Print Page</button>
     <button><a href="home.html">🏠 Home Page</a></button>
   </div>
 
@@ -265,17 +312,31 @@
     function generatePage() {
       const fields = ['name', 'department', 'semester', 'subject', 'topic', 'assignmentNo', 'submittedTo', 'submittedBy', 'date'];
       let allFilled = true;
+      
       fields.forEach(id => {
         const val = document.getElementById(id).value.trim();
-        if (!val) allFilled = false;
+        if (!val && id !== 'date') allFilled = false;
         document.getElementById('out' + id.charAt(0).toUpperCase() + id.slice(1)).innerText = val;
       });
+      
+      // Format date for output
+      const dateInput = document.getElementById('date').value;
+      if (dateInput) {
+        const dateObj = new Date(dateInput);
+        const formattedDate = dateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        document.getElementById('outDate').innerText = formattedDate;
+      }
+      
       if (!allFilled) return alert("⚠️ Please fill all fields!");
 
       document.getElementById('formContainer').style.display = 'none';
       document.getElementById('frontPage').style.display = 'block';
       document.getElementById('buttons').style.display = 'block';
-      window.scrollTo(0,0);
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function clearForm() {
@@ -286,6 +347,7 @@
       document.getElementById('frontPage').style.display = 'none';
       document.getElementById('buttons').style.display = 'none';
       document.getElementById('formContainer').style.display = 'block';
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function saveAsPDF() {
@@ -294,23 +356,47 @@
         margin:       0.5,
         filename:     'Assignment-FrontPage.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        html2canvas:  { 
+          scale: 3, // Increased scale for better quality
+          useCORS: true, // Allow cross-origin images
+          backgroundColor: '#ffffff', // Ensure white background
+          letterRendering: true,
+          logging: false
+        },
+        jsPDF:        { 
+          unit: 'in', 
+          format: 'a4', 
+          orientation: 'portrait',
+          compress: true
+        }
       };
-      html2pdf().set(opt).from(element).save();
+      
+      // Show loading message
+      const originalText = document.querySelector('#buttons button:first-child').innerHTML;
+      document.querySelector('#buttons button:first-child').innerHTML = '⏳ Generating PDF...';
+      document.querySelector('#buttons button:first-child').disabled = true;
+      
+      html2pdf().set(opt).from(element).save().then(() => {
+        // Restore button text
+        document.querySelector('#buttons button:first-child').innerHTML = originalText;
+        document.querySelector('#buttons button:first-child').disabled = false;
+      });
     }
 
-    function printPage() {
-      const printContents = document.getElementById('frontPage').innerHTML;
-      const originalContents = document.body.innerHTML;
-      document.body.innerHTML = printContents;
-      window.print();
-      document.body.innerHTML = originalContents;
-      location.reload();
-    }
+    // Optional: Add direct browser print support
+    window.addEventListener('beforeprint', function() {
+      document.getElementById('formContainer').style.display = 'none';
+      document.getElementById('buttons').style.display = 'none';
+      document.getElementById('frontPage').style.display = 'block';
+    });
+
+    window.addEventListener('afterprint', function() {
+      if (document.getElementById('formContainer').style.display === 'none') {
+        document.getElementById('buttons').style.display = 'block';
+      }
+    });
   </script>
 
 </body>
 </html>
-
 
